@@ -44,6 +44,9 @@ const breathe = keyframes`
 
 
 const Container = styled.div`
+  height: 100%;
+  width: 100%;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
