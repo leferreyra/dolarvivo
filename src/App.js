@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
+import get from 'lodash.get';
+import styled from 'styled-components';
 
 function App() {
+  const [price, setPrice] = useState('---');
+
+  const fetchPrice = () => {
+    Axios.get('/api/price')
+      .then(response => response.data)
+      .then(data => setPrice(get(data, 'items[1].unico', '---')))
+  }
+
+  useEffect(() => {
+    setInterval(fetchPrice, 1000);
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Price>${price}</Price>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Price = styled.h1`
+  font-size: 300px;
+`;
 
 export default App;
