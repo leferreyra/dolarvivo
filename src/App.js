@@ -52,6 +52,7 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 50px;
+  box-sizing: border-box;
 `;
 
 const Indicator = styled.div`
