@@ -39,6 +39,11 @@ function App() {
 
   return (
     <Container>
+
+      <Live>
+        <Indicator /> Actualizando en tiempo real
+      </Live>
+
       <Tickers>
 
         <Ticker>
@@ -103,9 +108,8 @@ const breathe = keyframes`
 
 const Container = styled.div`
   position: absolute;
-  height: 100%;
   width: 100%;
-  padding: 20px auto;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -175,21 +179,26 @@ const PriceValue = styled.div`
 const HistoricChart = styled.div`
   flex: 1 1 auto;
   width: 100%;
+  height: 100%;
 `;
 
-// const Indicator = styled.div`
-//   width: 10px;
-//   height: 10px;
-//   background: #00d600;
-//   border-radius: 10px;
-//   margin-right: 10px;
-//   animation: ${breathe} 1s infinite;
-// `;
+const Indicator = styled.div`
+  width: 10px;
+  height: 10px;
+  background: #00d600;
+  border-radius: 10px;
+  margin-right: 10px;
+  animation: ${breathe} 1s infinite;
+`;
 
-// const Live = styled.div`
-//   display: flex;
-//   align-items: center;
-//   font-size: 20px;
-// `;
+const Live = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #f5f5f5;
+`;
 
 export default App;
