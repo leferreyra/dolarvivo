@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
-import { ResponsiveContainer, AreaChart, Area, Tooltip } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, Tooltip, XAxis } from 'recharts';
 
 function App() {
   const [data, setData] = useState(null);
@@ -77,6 +77,7 @@ function App() {
             <Tooltip />
             <Area type="monotone" dataKey="blue" fillOpacity={0.5} />
             <Area type="monotone" dataKey="oficial" fillOpacity={0.5} />
+            <XAxis dataKey="date" hide />
           </AreaChart>
         </ResponsiveContainer>
       </HistoricChart>
