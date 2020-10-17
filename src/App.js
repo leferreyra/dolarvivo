@@ -104,7 +104,7 @@ const Container = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
-  margin: 20px auto;
+  padding: 20px auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -117,6 +117,10 @@ const Tickers = styled.div`
   flex: 0 0 auto;
   width: 100%;
   padding: 20px 0;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 `;
 
 const Ticker = styled.div`
@@ -128,6 +132,14 @@ const Ticker = styled.div`
 
   &:first-child {
     border-left: 0;
+  }
+
+  @media (max-width: 700px) {
+    border-left: 0;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
   }
 `;
 
