@@ -80,8 +80,8 @@ function App() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={history} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
             <Tooltip />
-            <Area type="monotone" dataKey="blue" fillOpacity={0.5} />
-            <Area type="monotone" dataKey="oficial" fillOpacity={0.5} />
+            <Area dataKey="blue" fillOpacity={0.5} />
+            <Area dataKey="oficial" fillOpacity={0.5} />
             <XAxis dataKey="date" hide />
           </AreaChart>
         </ResponsiveContainer>
