@@ -74,6 +74,10 @@ const Price = styled.h1`
   font-size: 300px;
   margin: 0 0 100px 0;
   line-height: 1em;
+
+  @media (max-width: 800px) {
+    font-size: 100px;
+  }
 `;
 
 export default App;
