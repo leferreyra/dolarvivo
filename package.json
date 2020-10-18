@@ -10,6 +10,7 @@
     "lodash.get": "^4.4.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-helmet": "^6.1.0",
     "react-scripts": "3.4.3",
     "recharts": "^1.8.5",
     "styled-components": "^5.2.0",

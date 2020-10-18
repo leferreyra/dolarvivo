@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
+import { Helmet } from 'react-helmet';
 import { ResponsiveContainer, AreaChart, Area, Tooltip, XAxis } from 'recharts';
+
+const PAGE_TITLE = "Dolar Vivo | El precio del dolar en tiempo real";
 
 function App() {
   const [data, setData] = useState(null);
@@ -44,6 +47,12 @@ function App() {
 
   return (
     <Container>
+
+      <Helmet>
+        <title>
+          [{blueBuy} / {blueSell} BLUE] {PAGE_TITLE}
+        </title>
+      </Helmet>
 
       <Live>
         <Indicator /> Actualizando en tiempo real
