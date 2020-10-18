@@ -3,7 +3,7 @@ import Axios from 'axios';
 import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
 import { Helmet } from 'react-helmet';
-import { ResponsiveContainer, AreaChart, Area, Tooltip, XAxis } from 'recharts';
+import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip, XAxis } from 'recharts';
 
 const PAGE_TITLE = "Dolar Vivo | El precio del dolar en tiempo real";
 
@@ -61,20 +61,6 @@ function App() {
       <Tickers>
 
         <Ticker>
-          <TickerTitle>Oficial</TickerTitle>
-          <Prices>
-            <Price>
-              <PriceValue>{officialBuy}</PriceValue>
-              <PriceTitle>Compra</PriceTitle>
-            </Price>
-            <Price>
-              <PriceValue>{officialSell}</PriceValue>
-              <PriceTitle>Venta</PriceTitle>
-            </Price>
-          </Prices>
-        </Ticker>
-
-        <Ticker>
           <TickerTitle>Blue</TickerTitle>
           <Prices>
             <Price>
@@ -88,16 +74,36 @@ function App() {
           </Prices>
         </Ticker>
 
+        <Ticker>
+          <TickerTitle>Oficial</TickerTitle>
+          <Prices>
+            <Price>
+              <PriceValue>{officialBuy}</PriceValue>
+              <PriceTitle>Compra</PriceTitle>
+            </Price>
+            <Price>
+              <PriceValue>{officialSell}</PriceValue>
+              <PriceTitle>Venta</PriceTitle>
+            </Price>
+          </Prices>
+        </Ticker>
+
       </Tickers>
 
       <HistoricChart>
         { history ? <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={history} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
+          <ComposedChart data={history} margin={{ top: 0, left: -10, right: -10, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#0099ff" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#0099ff" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
             <Tooltip />
-            <Area dataKey="blue" fillOpacity={0.5} />
-            <Area dataKey="oficial" fillOpacity={0.5} />
+            <Area type="natural" dataKey="blue" fillOpacity={1} stroke="#0099ff" strokeWidth={1} fill="url(#colorBlue)" />
+            <Line type="natural" dataKey="oficial" dot={false} stroke="#00ab00" strokeDasharray="3 3" />
             <XAxis dataKey="date" hide />
-          </AreaChart>
+          </ComposedChart>
         </ResponsiveContainer> : null}
       </HistoricChart>
 
@@ -188,6 +194,7 @@ const PriceTitle = styled.div`
 const PriceValue = styled.div`
   font-size: 50px;
   line-height: 1em;
+  color: black;
 `;
 
 const HistoricChart = styled.div`
