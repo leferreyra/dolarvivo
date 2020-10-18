@@ -36,6 +36,11 @@ function App() {
     fetchHistory();
     setInterval(fetchPrice, 5000);
   }, [])
+  
+  const officialBuy = parseFloat(get(data, 'oficial.value_buy', '0')).toFixed(1);
+  const officialSell = parseFloat(get(data, 'oficial.value_sell', '0')).toFixed(1);
+  const blueBuy = parseFloat(get(data, 'blue.value_buy', '0')).toFixed(1);
+  const blueSell = parseFloat(get(data, 'blue.value_sell', '0')).toFixed(1);
 
   return (
     <Container>
@@ -50,11 +55,11 @@ function App() {
           <TickerTitle>Oficial</TickerTitle>
           <Prices>
             <Price>
-              <PriceValue>{get(data, 'oficial.value_buy')}</PriceValue>
+              <PriceValue>{officialBuy}</PriceValue>
               <PriceTitle>Compra</PriceTitle>
             </Price>
             <Price>
-              <PriceValue>{get(data, 'oficial.value_sell')}</PriceValue>
+              <PriceValue>{officialSell}</PriceValue>
               <PriceTitle>Venta</PriceTitle>
             </Price>
           </Prices>
@@ -64,11 +69,11 @@ function App() {
           <TickerTitle>Blue</TickerTitle>
           <Prices>
             <Price>
-              <PriceValue>{get(data, 'blue.value_buy')}</PriceValue>
+              <PriceValue>{blueBuy}</PriceValue>
               <PriceTitle>Compra</PriceTitle>
             </Price>
             <Price>
-              <PriceValue>{get(data, 'blue.value_sell')}</PriceValue>
+              <PriceValue>{blueSell}</PriceValue>
               <PriceTitle>Venta</PriceTitle>
             </Price>
           </Prices>
@@ -77,14 +82,14 @@ function App() {
       </Tickers>
 
       <HistoricChart>
-        <ResponsiveContainer width="100%" height="100%">
+        { history ? <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={history} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
             <Tooltip />
             <Area dataKey="blue" fillOpacity={0.5} />
             <Area dataKey="oficial" fillOpacity={0.5} />
             <XAxis dataKey="date" hide />
           </AreaChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer> : null}
       </HistoricChart>
 
     </Container>
