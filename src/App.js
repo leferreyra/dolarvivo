@@ -92,7 +92,7 @@ function App() {
 
       <HistoricChart>
         { history ? <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={history} margin={{ top: 0, left: -10, right: -10, bottom: 0 }}>
+          <ComposedChart data={history} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorBlue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#0099ff" stopOpacity={0.8}/>
@@ -102,7 +102,7 @@ function App() {
             <Tooltip />
             <Area type="natural" dataKey="blue" fillOpacity={1} stroke="#0099ff" strokeWidth={1} fill="url(#colorBlue)" />
             <Line type="natural" dataKey="oficial" dot={false} stroke="#00ab00" strokeDasharray="3 3" />
-            <XAxis dataKey="date" hide />
+            <XAxis dataKey="date" domain={['dataMin', 'dataMax']} scale="point" hide />
           </ComposedChart>
         </ResponsiveContainer> : null}
       </HistoricChart>
