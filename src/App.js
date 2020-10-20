@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
-import Firebase from 'firebase';
+import Firebase from 'firebase/app';
 import { Helmet } from 'react-helmet';
 import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip, XAxis } from 'recharts';
 import 'firebase/firestore';
