@@ -2,20 +2,29 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
+import Firebase from 'firebase/app';
 import { Helmet } from 'react-helmet';
 import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip, XAxis } from 'recharts';
+import 'firebase/firestore';
+
+Firebase.initializeApp({
+  apiKey: "AIzaSyBdeMCMOfFkz92Rzb2InwOZkk3W3e3RBfw",
+  authDomain: "dolar-vivo.firebaseapp.com",
+  databaseURL: "https://dolar-vivo.firebaseio.com",
+  projectId: "dolar-vivo",
+  storageBucket: "dolar-vivo.appspot.com",
+  messagingSenderId: "22418687401",
+  appId: "1:22418687401:web:ee69887a48f4186a0730b8",
+  measurementId: "G-HN229N9NMK"
+});
+
+var db = Firebase.firestore();
 
 const PAGE_TITLE = "Dolar Vivo | El precio del dolar en tiempo real";
 
 function App() {
   const [data, setData] = useState(null);
   const [history, setHistory] = useState(null);
-
-  const fetchPrice = () => {
-    Axios.get('https://api.bluelytics.com.ar/v2/latest')
-      .then(response => response.data)
-      .then(data => setData(data))
-  }
 
   const fetchHistory = () => {
     Axios.get('https://api.bluelytics.com.ar/data/graphs/evolution.json')
@@ -35,15 +44,19 @@ function App() {
   }
 
   useEffect(() => {
-    fetchPrice();
     fetchHistory();
-    setInterval(fetchPrice, 5000);
+    db
+      .collection('prices')
+      .doc('default')
+      .onSnapshot(doc => {
+        setData(doc.data())
+      })
   }, [])
   
-  const officialBuy = parseFloat(get(data, 'oficial.value_buy', '0')).toFixed(1);
-  const officialSell = parseFloat(get(data, 'oficial.value_sell', '0')).toFixed(1);
-  const blueBuy = parseFloat(get(data, 'blue.value_buy', '0')).toFixed(1);
-  const blueSell = parseFloat(get(data, 'blue.value_sell', '0')).toFixed(1);
+  const officialBuy = get(data, 'officialBuy', 0).toFixed(1);
+  const officialSell = get(data, 'officialSell', 0).toFixed(1);
+  const blueBuy = get(data, 'blueBuy', 0).toFixed(1);
+  const blueSell = get(data, 'blueSell', 0).toFixed(1);
 
   return (
     <Container>
