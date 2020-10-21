@@ -6,7 +6,7 @@ import Firebase from 'firebase/app';
 import { Helmet } from 'react-helmet';
 import { Tooltip } from 'antd';
 import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip as ChartTooltip, XAxis } from 'recharts';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { MdInfoOutline as InfoIcon, MdBrightness6 as SunIcon } from 'react-icons/md';
 import 'firebase/firestore';
 
 Firebase.initializeApp({
@@ -24,9 +24,34 @@ var db = Firebase.firestore();
 
 const PAGE_TITLE = "Dolar Vivo | El precio del dolar en tiempo real";
 
+const DARK = 'DARK';
+const LIGHT = 'LIGHT';
+
+const THEMES = {
+  [LIGHT]: {
+    highlight: '#0099ff',
+    foreground: 'black',
+    background: 'white'
+  },
+  [DARK]: {
+    highlight: '#0099ff',
+    foreground: '#CCC',
+    background: '#222'
+  }
+}
+
 function App() {
   const [data, setData] = useState(null);
   const [history, setHistory] = useState(null);
+  const [themeId, setThemeId] = useState(LIGHT);
+
+  const theme = THEMES[themeId];
+
+  const toggleTheme = () => {
+    const t = themeId === LIGHT ? DARK : LIGHT;
+    setThemeId(t);
+    localStorage.setItem('theme', t);
+  }
 
   const fetchHistory = () => {
     Axios.get('https://api.bluelytics.com.ar/data/graphs/evolution.json')
@@ -46,6 +71,13 @@ function App() {
   }
 
   useEffect(() => {
+
+    const themeId = localStorage.getItem('theme');
+    
+    if (themeId) {
+      setThemeId(themeId);
+    }
+
     fetchHistory();
     db
       .collection('prices')
@@ -61,7 +93,7 @@ function App() {
   const blueSell = get(data, 'blueSell', 0).toFixed(1);
 
   return (
-    <Container>
+    <Container theme={theme}>
 
       <Helmet>
         <title>
@@ -69,19 +101,22 @@ function App() {
         </title>
       </Helmet>
 
-      <Live>
-        <Indicator /> Actualizando en tiempo real
-      </Live>
+      <TopBar>
+        <Status>
+          <Indicator /> Actualizando en tiempo real
+        </Status>
+        <ThemeToggleIcon onClick={toggleTheme} />
+      </TopBar>
 
       <Tickers>
 
         <Ticker>
-          <TickerTitle>
-            <Tooltip title="Fuente: Infobae / Ambito">
+          <Tooltip title="Fuente: Infobae / Ambito">
+            <TickerTitle>
               Blue
-              <InfoIcon />
-            </Tooltip>
-          </TickerTitle>
+              <StyledInfoIcon />
+            </TickerTitle>
+          </Tooltip>
           <Prices>
             <Price>
               <PriceValue>{blueBuy}</PriceValue>
@@ -95,12 +130,12 @@ function App() {
         </Ticker>
 
         <Ticker>
-          <TickerTitle>
-            <Tooltip title="Fuente: Banco Nacion">
+          <Tooltip title="Fuente: Banco Nacion">
+            <TickerTitle>
               Oficial
-              <InfoIcon />
-            </Tooltip>
-          </TickerTitle>
+              <StyledInfoIcon />
+            </TickerTitle>
+          </Tooltip>
           <Prices>
             <Price>
               <PriceValue>{officialBuy}</PriceValue>
@@ -120,8 +155,8 @@ function App() {
           <ComposedChart data={history} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorBlue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#0099ff" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#0099ff" stopOpacity={0}/>
+                <stop offset="5%" stopColor={theme.highlight} stopOpacity={0.8}/>
+                <stop offset="95%" stopColor={theme.highlight} stopOpacity={0}/>
               </linearGradient>
             </defs>
             <ChartTooltip />
@@ -160,6 +195,8 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   box-sizing: border-box;
+  background: ${props => props.theme.background};
+  color: ${props => props.theme.foreground};
 `;
 
 const Tickers = styled.div`
@@ -200,12 +237,8 @@ const TickerTitle = styled.div`
   align-items: center;
 `;
 
-const InfoIcon = styled(InfoCircleOutlined)`
-  font-size: 12px;
-  position: relative;
-  top: -1px;
+const StyledInfoIcon = styled(InfoIcon)`
   margin-left: 3px;
-  color: gray;
 `;
 
 const Prices = styled.div`
@@ -229,7 +262,6 @@ const PriceValue = styled.div`
   font-size: 50px;
   font-weight: 300;
   line-height: 1em;
-  color: black;
 `;
 
 const HistoricChart = styled.div`
@@ -247,14 +279,29 @@ const Indicator = styled.div`
   animation: ${breathe} 1s infinite;
 `;
 
-const Live = styled.div`
+const Status = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   font-size: 16px;
-  padding: 10px;
+  padding: 12px 15px;
   box-sizing: border-box;
-  background: #f5f5f5;
+`;
+
+const ThemeToggleIcon = styled(SunIcon)`
+  width: 20px;
+  height: 20px;
+  margin: 0 15px;
+  cursor: pointer;
+`;
+
+const TopBar = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.05);
 `;
 
 export default App;
