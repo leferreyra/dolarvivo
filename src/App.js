@@ -4,7 +4,9 @@ import get from 'lodash.get';
 import styled, { keyframes } from 'styled-components';
 import Firebase from 'firebase/app';
 import { Helmet } from 'react-helmet';
-import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip, XAxis } from 'recharts';
+import { Tooltip } from 'antd';
+import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip as ChartTooltip, XAxis } from 'recharts';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import 'firebase/firestore';
 
 Firebase.initializeApp({
@@ -74,7 +76,12 @@ function App() {
       <Tickers>
 
         <Ticker>
-          <TickerTitle>Blue</TickerTitle>
+          <TickerTitle>
+            <Tooltip title="Fuente: Infobae / Ambito">
+              Blue
+              <InfoIcon />
+            </Tooltip>
+          </TickerTitle>
           <Prices>
             <Price>
               <PriceValue>{blueBuy}</PriceValue>
@@ -88,7 +95,12 @@ function App() {
         </Ticker>
 
         <Ticker>
-          <TickerTitle>Oficial</TickerTitle>
+          <TickerTitle>
+            <Tooltip title="Fuente: Banco Nacion">
+              Oficial
+              <InfoIcon />
+            </Tooltip>
+          </TickerTitle>
           <Prices>
             <Price>
               <PriceValue>{officialBuy}</PriceValue>
@@ -112,7 +124,7 @@ function App() {
                 <stop offset="95%" stopColor="#0099ff" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <Tooltip />
+            <ChartTooltip />
             <Area type="natural" dataKey="blue" fillOpacity={1} stroke="#0099ff" strokeWidth={1} fill="url(#colorBlue)" />
             <Line type="natural" dataKey="oficial" dot={false} stroke="#00ab00" strokeDasharray="3 3" />
             <XAxis dataKey="date" domain={['dataMin', 'dataMax']} scale="point" hide />
@@ -185,6 +197,15 @@ const TickerTitle = styled.div`
   display: flex;
   text-transform: uppercase;
   justify-content: center;
+  align-items: center;
+`;
+
+const InfoIcon = styled(InfoCircleOutlined)`
+  font-size: 12px;
+  position: relative;
+  top: -1px;
+  margin-left: 3px;
+  color: gray;
 `;
 
 const Prices = styled.div`
@@ -206,6 +227,7 @@ const PriceTitle = styled.div`
 
 const PriceValue = styled.div`
   font-size: 50px;
+  font-weight: 300;
   line-height: 1em;
   color: black;
 `;
