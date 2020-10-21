@@ -37,6 +37,8 @@ const getAmbitoPrice = () => {
     .then(response => ([float(get(response, 'data.compra', 0)), float(get(response, 'data.venta', 0))]))
 }
 
+let snapshot = null;
+
 const main = async () => {
 
   console.log('- Fetching data from BNA')
@@ -51,14 +53,27 @@ const main = async () => {
 
   const blueSell = Math.max(infobaeSell, ambitoSell);
 
-  console.log('- Pushing to Firebase')
-  db.collection('prices').doc('default').set({
-    updated: admin.firestore.FieldValue.serverTimestamp(),
+  const data = {
     officialBuy,
     officialSell,
     blueBuy,
     blueSell
-  });
+  }
+
+  const dataSnapshot = JSON.stringify(data);
+
+  if (dataSnapshot !== snapshot) {
+    snapshot = dataSnapshot;
+
+    console.log('- Pushing to Firebase')
+    db.collection('prices').doc('default').set({
+      updated: admin.firestore.FieldValue.serverTimestamp(),
+      ...data
+    });
+
+  } else {
+    console.log('- Skiping because there was no change', snapshot, dataSnapshot);
+  }
 
   setTimeout(main, 5000);
 
