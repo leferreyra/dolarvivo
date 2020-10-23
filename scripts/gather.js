@@ -18,6 +18,28 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+const messaging = admin.messaging();
+
+const sendNotification = notification => {
+  return db.collection('devices').get().then(snapshot => {
+    const tokens = [];
+
+    snapshot.forEach(doc => {
+      const device = doc.data();
+      if (device.enabled) tokens.push(device.token);
+    });
+
+    const message = {
+      notification,
+      tokens
+    }
+
+    messaging.sendMulticast(message)
+      .then(response => console.log('all messages sent', response))
+      .catch(error => console.error(error));
+  })
+  .catch(error => console.error(error));
+}
 
 const getBNAPrice = () => {
   return x('https://www.bna.com.ar/Personas', {
@@ -61,6 +83,7 @@ const main = async () => {
   }
 
   const dataSnapshot = JSON.stringify(data);
+  const previousData = snapshot && JSON.parse(snapshot);
 
   if (dataSnapshot !== snapshot) {
     snapshot = dataSnapshot;
@@ -70,6 +93,29 @@ const main = async () => {
       updated: admin.firestore.FieldValue.serverTimestamp(),
       ...data
     });
+
+    // Send notifications if blue sell price changed
+    if (previousData) {
+
+      blueSellDifference = data.blueSell - previousData.blueSell;
+
+      if (blueSellDifference > 0) {
+        console.log('Sending dolar blue up notification', blueSellDifference, previousData, data);
+        sendNotification({
+          title: `El dolar blue subio a $${data.blueSell}`,
+          body: `Compra: ${data.blueBuy}, Venta: ${data.blueSell}`
+        });
+      } else if (blueSellDifference < 0) {
+        console.log('Sending dolar blue down notification', blueSellDifference, previousData, data);
+        sendNotification({
+          title: `El dolar blue subio a $${data.blueSell}`,
+          body: `Compra: ${data.blueBuy}, Venta: ${data.blueSell}`
+        });
+      } else {
+        console.log('No change', blueSellDifference, previousData, data);
+      }
+    }
+
 
   } else {
     console.log('- Skiping because there was no change', snapshot, dataSnapshot);

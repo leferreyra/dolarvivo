@@ -6,8 +6,15 @@ import Firebase from 'firebase/app';
 import { Helmet } from 'react-helmet';
 import { Tooltip } from 'antd';
 import { ResponsiveContainer, ComposedChart, Area, Line, Tooltip as ChartTooltip, XAxis } from 'recharts';
-import { MdInfoOutline as InfoIcon, MdBrightness6 as SunIcon } from 'react-icons/md';
+import {
+  MdInfoOutline as InfoIcon,
+  MdBrightness6 as SunIcon,
+  MdNotifications as BellIcon,
+  MdNotificationsActive as BellEnabledIcon,
+  MdNotificationsOff as BellDisabledIcon,
+} from 'react-icons/md';
 import 'firebase/firestore';
+import 'firebase/messaging';
 
 Firebase.initializeApp({
   apiKey: "AIzaSyBdeMCMOfFkz92Rzb2InwOZkk3W3e3RBfw",
@@ -20,12 +27,17 @@ Firebase.initializeApp({
   measurementId: "G-HN229N9NMK"
 });
 
-var db = Firebase.firestore();
+const db = Firebase.firestore();
+const messaging = Firebase.messaging();
 
 const PAGE_TITLE = "Dolar Vivo | El precio del dolar en tiempo real";
 
 const DARK = 'DARK';
 const LIGHT = 'LIGHT';
+
+const ENABLED = 'ENABLED';
+const DISABLED = 'DISABLED';
+const INITIAL = 'INITIAL';
 
 const THEMES = {
   [LIGHT]: {
@@ -44,6 +56,7 @@ function App() {
   const [data, setData] = useState(null);
   const [history, setHistory] = useState(null);
   const [themeId, setThemeId] = useState(LIGHT);
+  const [notificationsStatus, setNotificationsStatus] = useState(INITIAL);
 
   const theme = THEMES[themeId];
 
@@ -70,27 +83,57 @@ function App() {
       });
   }
 
+  const setupNotifications = () => {
+    localStorage.setItem('notificationsPermissionRequested', true);
+    messaging.getToken({
+      vapidKey: 'BOjplzf6CjeRCeeGZhIkyMaEoapBwRBdTBxPwr_a8WxobVdygM5IQLpuDC3WH-2ta32n6W9RfTnFZYfKVvkMmYU'
+    })
+      .then(token => {
+        if (token) {
+          // Permission granted
+          db.collection('devices').doc(token).set({ token, enabled: true })
+          setNotificationsStatus(ENABLED);
+        } else {
+          // Permission denied
+          setNotificationsStatus(DISABLED);
+        }
+      }) 
+      .catch(error => {
+        setNotificationsStatus(DISABLED);
+      })
+  }
+
   useEffect(() => {
 
     const themeId = localStorage.getItem('theme');
+    const requested = localStorage.getItem('notificationsPermissionRequested');
+
+    if (requested) {
+      setupNotifications();
+    }
     
     if (themeId) {
       setThemeId(themeId);
     }
 
     fetchHistory();
+
     db
       .collection('prices')
       .doc('default')
       .onSnapshot(doc => {
         setData(doc.data())
       })
+
   }, [])
   
   const officialBuy = get(data, 'officialBuy', 0).toFixed(1);
   const officialSell = get(data, 'officialSell', 0).toFixed(1);
   const blueBuy = get(data, 'blueBuy', 0).toFixed(1);
   const blueSell = get(data, 'blueSell', 0).toFixed(1);
+
+  const NotificationIcon = notificationsStatus === INITIAL ? BellIcon :
+    notificationsStatus === ENABLED ? BellEnabledIcon : BellDisabledIcon;
 
   return (
     <Container theme={theme}>
@@ -105,6 +148,9 @@ function App() {
         <Status>
           <Indicator /> Actualizando en tiempo real
         </Status>
+        <NotificationButton enabled={notificationsStatus === ENABLED} theme={theme} onClick={setupNotifications}>
+          <NotificationIcon />
+        </NotificationButton>
         <ThemeToggleIcon onClick={toggleTheme} />
       </TopBar>
 
@@ -291,8 +337,21 @@ const Status = styled.div`
 const ThemeToggleIcon = styled(SunIcon)`
   width: 20px;
   height: 20px;
-  margin: 0 15px;
+  margin-right: 20px;
   cursor: pointer;
+`;
+
+const NotificationButton = styled.div`
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+    color: ${props => props.enabled ? props.theme.highlight : 'inherit' };
+  }
 `;
 
 const TopBar = styled.div`
