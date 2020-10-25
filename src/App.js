@@ -50,6 +50,7 @@ function App() {
   const toggleTheme = () => {
     const t = themeId === LIGHT ? DARK : LIGHT;
     setThemeId(t);
+    window.gtag('event', 'toggle-theme', { themeId: t });
     localStorage.setItem('theme', t);
   }
 
