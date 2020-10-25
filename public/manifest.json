@@ -1,8 +1,8 @@
 {
-  "short_name": "Dolar Vivo",
-  "name": "Dolar Vivo",
+  "_short_name": "Dolar Vivo",
+  "_name": "Dolar Vivo",
   "description": "Sigue el precio del dolar blue y oficial en tiempo real",
-  "icons": [
+  "_icons": [
     {
       "src": "icon.png",
       "type": "image/png",
