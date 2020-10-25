@@ -6,7 +6,8 @@
     {
       "src": "icon.png",
       "type": "image/png",
-      "sizes": "392x392"
+      "sizes": "392x392",
+      "purpose": "maskable"
     }
   ],
   "start_url": ".",
