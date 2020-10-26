@@ -108,7 +108,7 @@ const main = async () => {
       } else if (blueSellDifference < 0) {
         console.log('Sending dolar blue down notification', blueSellDifference, previousData, data);
         sendNotification({
-          title: `El dolar blue subio a $${data.blueSell}`,
+          title: `El dolar blue bajo a $${data.blueSell}`,
           body: `Compra: ${data.blueBuy}, Venta: ${data.blueSell}`
         });
       } else {
