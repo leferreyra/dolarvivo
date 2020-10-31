@@ -26,3 +26,6 @@ yarn-error.log*
 
 # Firebase
 service-account.json
+
+# Vim
+*.swp
