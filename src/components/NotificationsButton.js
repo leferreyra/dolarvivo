@@ -11,7 +11,7 @@ import {
 const VAPID_KEY = 'BOjplzf6CjeRCeeGZhIkyMaEoapBwRBdTBxPwr_a8WxobVdygM5IQLpuDC3WH-2ta32n6W9RfTnFZYfKVvkMmYU';
 
 const db = Firebase.firestore();
-const messaging = Firebase.messaging();
+const messaging = Firebase.messaging.isSupported() ? Firebase.messaging() : null;
 
 function NotificationsToggle({ token }) {
   const [enabled, setEnabled] = useState(false);
@@ -85,6 +85,18 @@ function Notifications({ theme }) {
     if (requested) setupNotifications();
   }, [])
 
+  if (!messaging) {
+    return (
+      <Button>
+        <Tooltip
+          arrowPointAtCenter
+          placement="bottomRight"
+          title="Tu navegador no soporta notificaciones push.">
+          <BellDisabledIcon />
+        </Tooltip>
+      </Button>
+    );
+  }
 
   if (rejected) {
     return (

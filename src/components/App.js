@@ -209,6 +209,7 @@ const TopBar = styled.div`
   font-size: 16px;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.05);
+  min-height: 40px;
 `;
 
 export default App;
