@@ -31,7 +31,7 @@ function NotificationsToggle({ token }) {
   useEffect(() => {
     db.collection('devices').doc(token).get()
       .then(snapshot => setEnabled(snapshot.data().enabled || false));
-  }, []);
+  }, [token]);
 
 
   const NotificationIcon = enabled ? BellEnabledIcon : BellIcon;
