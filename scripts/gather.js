@@ -49,6 +49,23 @@ const getBNAPrice = () => {
     .then(({ buy, sell }) => ([buy, sell]))
 }
 
+const getIOLPrice = () => {
+  const AL30_promise = x('https://www.invertironline.com/titulo/cotizacion/BCBA/AL30/', {
+    last: '#IdTitulo span[data-field="UltimoPrecio"]'
+  })
+  const AL30D_promise = x('https://www.invertironline.com/titulo/cotizacion/BCBA/AL30D/', {
+    last: '#IdTitulo span[data-field="UltimoPrecio"]'
+  })
+  const AL30C_promise = x('https://www.invertironline.com/titulo/cotizacion/BCBA/AL30C/', {
+    last: '#IdTitulo span[data-field="UltimoPrecio"]'
+  })
+  
+  return Promise.all([AL30_promise, AL30D_promise, AL30C_promise])
+    .then((values) => values.map(value => value.last.replace(".", "").replace(",",".")))
+    .then((v) => ({ MEP: v[0] /v[1], CCL: v[0]/v[2]}))
+    ;
+}
+
 const getInfobaePrice = () => {
   return Axios.get('https://static.coins.infobae.com/cotizacion-simple/dolar-libre-riesgo.json')
     .then(response => ([null, get(response, 'data.items[1].unico', 0)]))
@@ -75,11 +92,15 @@ const main = async () => {
 
   const blueSell = Math.max(infobaeSell, ambitoSell);
 
+  const {MEP,CCL} = getIOLPrice();
+
   const data = {
     officialBuy,
     officialSell,
     blueBuy,
-    blueSell
+    blueSell,
+    MEP,
+    CCL
   }
 
   const dataSnapshot = JSON.stringify(data);
