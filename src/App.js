@@ -86,6 +86,9 @@ function App() {
       .onSnapshot(doc => {
         setData(doc.data())
       })
+
+    window.onappinstalled = () => window.gtag('event', 'app-installed');
+
   }, [])
   
   const officialBuy = get(data, 'officialBuy', 0).toFixed(1);
