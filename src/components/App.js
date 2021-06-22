@@ -61,6 +61,10 @@ function App() {
           </title>
         </Helmet>
 
+        <Message>
+          Este sitio no sera actualizado mas. No lo uses ;)
+        </Message>
+
         <TopBar>
           <Status />
           <NotificationButton />
@@ -210,6 +214,14 @@ const TopBar = styled.div`
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.05);
   min-height: 40px;
+`;
+
+const Message = styled.div`
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  background-color: red;
+  color: white;
 `;
 
 export default App;
